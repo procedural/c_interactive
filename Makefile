@@ -1,16 +1,16 @@
-CFLAGS  = -std=c99 -pedantic -Wall -O0 -fPIC -g
-LDLIBS  = -ldl -lncurses
+CFLAGS = -fPIC -O0 -g
+LDLIBS = -ldl
 
-all : main libgame.so
+all: main libapp.so
 
-main : main.c game.h
+main: main.c app.h
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
 
-libgame.so : game.c game.h
+libapp.so: app.c app.h
 	$(CC) $(CFLAGS) -shared $(LDFLAGS) -o $@ $< $(LDLIBS)
 
-test : main libgame.so
+test: main libapp.so
 	./$<
 
-clean :
+clean:
 	$(RM) *.o *.so main

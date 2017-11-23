@@ -2,63 +2,63 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <dlfcn.h>
-#include "game.h"
+#include "app.h"
 
-struct game_t {
+struct app_t {
   void * handle;
   ino_t  id;
-  struct game_api_t api;
-  struct game_state_t * state;
+  struct app_api_t api;
+  struct app_state_t * state;
 };
 
-static void game_load(struct game_t * game) {
+static void AppLoad(struct app_t * app) {
   struct stat attr = {0};
-  if ((stat("./libgame.so", &attr) == 0) && (game->id != attr.st_ino)) {
-    if (game->handle != NULL) {
-      game->api.unload(game->state);
-      dlclose(game->handle);
+  if ((stat("./libapp.so", &attr) == 0) && (app->id != attr.st_ino)) {
+    if (app->handle != NULL) {
+      app->api.Unload(app->state);
+      dlclose(app->handle);
     }
-    void * handle = dlopen("./libgame.so", RTLD_NOW);
+    void * handle = dlopen("./libapp.so", RTLD_NOW);
     if (handle != NULL) {
-      game->handle = handle;
-      game->id = attr.st_ino;
-      struct game_api_t * api = dlsym(game->handle, "GAME_API");
+      app->handle = handle;
+      app->id = attr.st_ino;
+      struct app_api_t * api = dlsym(app->handle, "APP_API");
       if (api != NULL) {
-        game->api = api[0];
-        if (game->state == NULL)
-          game->state = game->api.init();
-        game->api.reload(game->state);
+        app->api = api[0];
+        if (app->state == NULL)
+          app->state = app->api.Init();
+        app->api.Reload(app->state);
       } else {
-        dlclose(game->handle);
-        game->handle = NULL;
-        game->id = 0;
+        dlclose(app->handle);
+        app->handle = NULL;
+        app->id = 0;
       }
     } else {
-      game->handle = NULL;
-      game->id = 0;
+      app->handle = NULL;
+      app->id = 0;
     }
   }
 }
 
-void game_unload(struct game_t * game) {
-  if (game->handle != NULL) {
-    game->api.finalize(game->state);
-    game->state = NULL;
-    dlclose(game->handle);
-    game->handle = NULL;
-    game->id = 0;
+void AppUnload(struct app_t * app) {
+  if (app->handle != NULL) {
+    app->api.Finalize(app->state);
+    app->state = NULL;
+    dlclose(app->handle);
+    app->handle = NULL;
+    app->id = 0;
   }
 }
 
 int main() {
-  struct game_t game = {0};
-  for (;;) {
-    game_load(&game);
-    if (game.handle != NULL)
-      if (game.api.step(game.state) == false)
+  struct app_t app = {0};
+  for (int i = 0; i < 250; i += 1) {
+    AppLoad(&app);
+    if (app.handle != NULL)
+      if (app.api.Step(app.state) != 0)
         break;
     usleep(100000);
   }
-  game_unload(&game);
+  AppUnload(&app);
   return 0;
 }
