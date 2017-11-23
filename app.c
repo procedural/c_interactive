@@ -7,7 +7,7 @@ struct state_t {
 
 static void * AppInit() {
   printf("Init\n");
-  void * state = mmap(0, 256 * 1024 * 1024, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+  void * state = mmap(0, 256L * 1024L * 1024L * 1024L, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
   return state;
 }
 
@@ -30,7 +30,7 @@ static void AppUnload(void * state) {
 static void AppFinalize(void * state) {
   struct state_t * s = state;
   printf("Finalize\n");
-  munmap(state, 256 * 1024 * 1024);
+  munmap(state, 256L * 1024L * 1024L * 1024L);
 }
 
 struct api_t APP_API = {
