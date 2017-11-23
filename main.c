@@ -2,13 +2,13 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <dlfcn.h>
-#include "app.h"
+#include "api.h"
 
 struct app_t {
+  struct api_t api;
   void * handle;
+  void * state;
   ino_t  id;
-  struct app_api_t api;
-  struct app_state_t * state;
 };
 
 static void AppLoad(struct app_t * app) {
@@ -22,7 +22,7 @@ static void AppLoad(struct app_t * app) {
     if (handle != NULL) {
       app->handle = handle;
       app->id = attr.st_ino;
-      struct app_api_t * api = dlsym(app->handle, "APP_API");
+      struct api_t * api = dlsym(app->handle, "APP_API");
       if (api != NULL) {
         app->api = api[0];
         if (app->state == NULL)
@@ -52,7 +52,7 @@ void AppUnload(struct app_t * app) {
 
 int main() {
   struct app_t app = {0};
-  for (int i = 0; i < 250; i += 1) {
+  for (int i = 0; i < 1000; i += 1) {
     AppLoad(&app);
     if (app.handle != NULL)
       if (app.api.Step(app.state) != 0)

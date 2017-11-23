@@ -1,32 +1,39 @@
-#include <stdlib.h>
+#include <sys/mman.h>
 #include <stdio.h>
-#include "app.h"
+#include "api.h"
 
-static struct app_state_t * AppInit() {
+struct state_t {
+};
+
+static void * AppInit() {
   printf("Init\n");
-  struct app_state_t * state = calloc(1, sizeof(struct app_state_t));
+  void * state = mmap(0, 256 * 1024 * 1024, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
   return state;
 }
 
-static void AppReload(struct app_state_t * state) {
+static void AppReload(void * state) {
+  struct state_t * s = state;
   printf("Reload\n");
 }
 
-static int AppStep(struct app_state_t * state) {
+static int AppStep(void * state) {
+  struct state_t * s = state;
   printf("Step\n");
   return 0;
 }
 
-static void AppUnload(struct app_state_t * state) {
+static void AppUnload(void * state) {
+  struct state_t * s = state;
   printf("Unload\n");
 }
 
-static void AppFinalize(struct app_state_t * state) {
+static void AppFinalize(void * state) {
+  struct state_t * s = state;
   printf("Finalize\n");
-  free(state);
+  munmap(state, 256 * 1024 * 1024);
 }
 
-struct app_api_t APP_API = {
+struct api_t APP_API = {
   .Init     = AppInit,
   .Reload   = AppReload,
   .Step     = AppStep,
