@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include "api.h"
 
-struct state_t {
-};
+struct state_t {};
 
 static void * AppInit() {
+  void * state = mmap(0, 256L * 1024L * 1024L * 1024L, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE | MAP_NORESERVE, -1, 0);
+  struct state_t * s = state;
   printf("Init\n");
-  void * state = mmap(0, 256L * 1024L * 1024L * 1024L, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
   return state;
 }
 
