@@ -13,4 +13,4 @@ test: main libapp.so
 	./$<
 
 clean:
-	$(RM) *.o *.so main
+	$(RM) main libapp.so

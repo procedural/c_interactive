@@ -4,39 +4,47 @@
 
 struct state_t {};
 
+struct state_t * s = NULL;
+
 static void * AppInit() {
   void * state = mmap(0, 256L * 1024L * 1024L * 1024L, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE | MAP_NORESERVE, -1, 0);
-  struct state_t * s = state;
+  s = state;
+
   printf("Init\n");
+
   return state;
 }
 
-static void AppReload(void * state) {
-  struct state_t * s = state;
+static void AppLoad(void * state) {
+  s = state;
+
   printf("Reload\n");
 }
 
 static int AppStep(void * state) {
-  struct state_t * s = state;
+  s = state;
+
   printf("Step\n");
   return 0;
 }
 
 static void AppUnload(void * state) {
-  struct state_t * s = state;
+  s = state;
+
   printf("Unload\n");
 }
 
-static void AppFinalize(void * state) {
-  struct state_t * s = state;
+static void AppDeinit(void * state) {
+  s = state;
+
   printf("Finalize\n");
   munmap(state, 256L * 1024L * 1024L * 1024L);
 }
 
 struct api_t APP_API = {
-  .Init     = AppInit,
-  .Reload   = AppReload,
-  .Step     = AppStep,
-  .Unload   = AppUnload,
-  .Finalize = AppFinalize
+  .Init   = AppInit,
+  .Load   = AppLoad,
+  .Step   = AppStep,
+  .Unload = AppUnload,
+  .Deinit = AppDeinit
 };

@@ -27,7 +27,7 @@ static void AppLoad(struct app_t * app) {
         app->api = api[0];
         if (app->state == NULL)
           app->state = app->api.Init();
-        app->api.Reload(app->state);
+        app->api.Load(app->state);
       } else {
         dlclose(app->handle);
         app->handle = NULL;
@@ -43,7 +43,7 @@ static void AppLoad(struct app_t * app) {
 void AppUnload(struct app_t * app) {
   if (app->handle != NULL) {
     app->api.Unload(app->state);
-    app->api.Finalize(app->state);
+    app->api.Deinit(app->state);
     app->state = NULL;
     dlclose(app->handle);
     app->handle = NULL;
