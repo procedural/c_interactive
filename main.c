@@ -1,4 +1,3 @@
-#define _BSD_SOURCE // usleep()
 #include <unistd.h>
 #include <sys/stat.h>
 #include <dlfcn.h>
