@@ -52,12 +52,12 @@ void AppUnload(struct app_t * app) {
 
 int main() {
   struct app_t app = {0};
-  for (int i = 0; i < 1000; i += 1) {
+  for (;;) {
     AppLoad(&app);
     if (app.handle != NULL)
       if (app.api.Step(app.state) != 0)
         break;
-    usleep(100000);
+    usleep(500000); // Delete this line for full speed.
   }
   AppUnload(&app);
   return 0;

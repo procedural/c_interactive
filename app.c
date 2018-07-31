@@ -7,27 +7,27 @@ struct state_t {};
 static void * AppInit() {
   struct state_t * state = mmap(0, 0xF00000000, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE | MAP_NORESERVE, -1, 0);
 
-  printf("Init\n");
+  printf("AppInit()\n");
 
   return state;
 }
 
 static void AppLoad(struct state_t * state) {
-  printf("Reload\n");
+  printf("AppLoad()\n");
 }
 
 static int AppStep(struct state_t * state) {
-  printf("Step\n");
+  printf("AppStep()\n");
 
   return 0;
 }
 
 static void AppUnload(struct state_t * state) {
-  printf("Unload\n");
+  printf("AppUnload()\n");
 }
 
 static void AppDeinit(struct state_t * state) {
-  printf("Finalize\n");
+  printf("AppDeinit()\n");
 
   munmap(state, 0xF00000000);
 }
